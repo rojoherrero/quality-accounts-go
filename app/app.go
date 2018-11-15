@@ -25,10 +25,10 @@ func (a *App) createRoutes() {
 }
 
 func (a *App) rolesRoutes() {
-	a.router.HandleFunc("/role", a.api.roleHandler.Save).Methods(http.MethodPost)
-	a.router.HandleFunc("/role/update", a.api.roleHandler.Update).Methods(http.MethodPut)
-	a.router.HandleFunc("/role/{start}/{finish}", a.api.roleHandler.Paginate).Methods(http.MethodGet)
-	a.router.HandleFunc("/role", a.api.roleHandler.Delete).Methods(http.MethodDelete)
+	a.router.HandleFunc("/role", a.api.role.Save).Methods(http.MethodPost)
+	a.router.HandleFunc("/role/update", a.api.role.Update).Methods(http.MethodPut)
+	a.router.HandleFunc("/role/{start}/{finish}", a.api.role.Paginate).Methods(http.MethodGet)
+	a.router.HandleFunc("/role", a.api.role.Delete).Methods(http.MethodDelete)
 
 }
 

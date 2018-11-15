@@ -9,15 +9,25 @@ import (
 )
 
 type api struct {
-	roleHandler handler.RoleHandler
+	role       handler.RoleHandler
+	department handler.DepartmentHandler
 }
 
 func newApi(db *pgx.ConnPool, nc *nats.Conn) *api {
-	return &api{roleHandler: initRoleHandler(db)}
+	return &api{
+		role:       initRoleHandler(db),
+		department: initDepartmentHandler(db),
+	}
 }
 
 func initRoleHandler(db *pgx.ConnPool) handler.RoleHandler {
 	r := repository.NewRoleRepository(db)
 	s := service.NewRoleService(r)
 	return handler.NewRoleHandler(s)
+}
+
+func initDepartmentHandler(db *pgx.ConnPool) handler.DepartmentHandler {
+	r := repository.NewDepartmentRepository(db)
+	s := service.NewDepartmentService(r)
+	return handler.NewDepartmentHandler(s)
 }
