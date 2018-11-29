@@ -6,7 +6,7 @@ package mock
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	entity "github.com/rojoherrero/quality-accounts/app/model/entity"
+	model "github.com/rojoherrero/quality-accounts/app/model"
 	reflect "reflect"
 )
 
@@ -34,7 +34,7 @@ func (m *MockRoleRepository) EXPECT() *MockRoleRepositoryMockRecorder {
 }
 
 // Save mocks base method
-func (m *MockRoleRepository) Save(role entity.Role) error {
+func (m *MockRoleRepository) Save(role model.RoleDepartment) error {
 	ret := m.ctrl.Call(m, "Save", role)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -46,21 +46,21 @@ func (mr *MockRoleRepositoryMockRecorder) Save(role interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockRoleRepository) Update(role entity.Role, oldCode string) error {
-	ret := m.ctrl.Call(m, "Update", role, oldCode)
+func (m *MockRoleRepository) Update(data model.RoleDepartmentUpdate) error {
+	ret := m.ctrl.Call(m, "Update", data)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockRoleRepositoryMockRecorder) Update(role, oldCode interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoleRepository)(nil).Update), role, oldCode)
+func (mr *MockRoleRepositoryMockRecorder) Update(data interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoleRepository)(nil).Update), data)
 }
 
 // Paginate mocks base method
-func (m *MockRoleRepository) Paginate(start, end int) ([]entity.Role, error) {
+func (m *MockRoleRepository) Paginate(start, end int) ([]model.RoleDepartment, error) {
 	ret := m.ctrl.Call(m, "Paginate", start, end)
-	ret0, _ := ret[0].([]entity.Role)
+	ret0, _ := ret[0].([]model.RoleDepartment)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

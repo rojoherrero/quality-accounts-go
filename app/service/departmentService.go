@@ -1,31 +1,46 @@
 package service
 
 import (
-	"github.com/rojoherrero/quality-accounts/app/model/entity"
-	"github.com/rojoherrero/quality-accounts/app/model/request"
+	"github.com/rojoherrero/quality-accounts/app/model"
 	"github.com/rojoherrero/quality-accounts/app/repository"
+	"github.com/rojoherrero/quality-common"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=../mock/mock_$GOFILE -package=mock
 
 type (
 	DepartmentService interface {
-		Save(role entity.Department) error
-		Update(data request.DepartmentUpdate) error
-		Paginate(start, end int) ([]entity.Department, error)
+		Save(dept model.RoleDepartment) error
+		Update(data model.RoleDepartmentUpdate) error
+		Paginate(start, end int) ([]model.RoleDepartment, error)
 		Delete(code string) error
 	}
 
 	departmentService struct {
-		repo repository.DepartmentRepository
+		repo   repository.DepartmentRepository
+		logger common.Logger
 	}
 )
 
-func NewDepartmentService(repo repository.DepartmentRepository) DepartmentService {
-	return &departmentService{repo: repo}
+func NewDepartmentService(repo repository.DepartmentRepository, logger common.Logger) DepartmentService {
+	return &departmentService{
+		repo:   repo,
+		logger: logger,
+	}
 }
 
-func (s *departmentService) Save(role entity.Department) error {}
-func (s *departmentService) Update(data request.DepartmentUpdate) error {}
-func (s *departmentService) Paginate(start, end int) ([]entity.Department, error) {}
-func (s *departmentService) Delete(code string) error {}
+func (s *departmentService) Save(dept model.RoleDepartment) error {
+	return s.repo.Save(dept)
+}
+
+func (s *departmentService) Update(data model.RoleDepartmentUpdate) error {
+	return s.repo.Update(data)
+}
+
+func (s *departmentService) Paginate(start, end int) ([]model.RoleDepartment, error) {
+	return s.repo.Paginate(start, end)
+}
+
+func (s *departmentService) Delete(code string) error {
+	return s.repo.Delete(code)
+}

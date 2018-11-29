@@ -1,49 +1,53 @@
 package handler
 
+//go:generate mockgen -source=$GOFILE -destination=../mock/mock_$GOFILE -package=mock
+
 import (
-	"encoding/json"
-	"github.com/rojoherrero/quality-accounts/app/model/entity"
-	"github.com/rojoherrero/quality-accounts/app/service"
+	"github.com/rojoherrero/quality-common"
 	"net/http"
+
+	"github.com/rojoherrero/quality-accounts/app/model"
+	"github.com/rojoherrero/quality-accounts/app/service"
 )
 
 type (
 	RoleHandler interface {
-		Save(res http.ResponseWriter, req *http.Request)
-		Update(res http.ResponseWriter, req *http.Request)
-		Paginate(res http.ResponseWriter, req *http.Request)
-		Delete(res http.ResponseWriter, req *http.Request)
+		Save(w http.ResponseWriter, r *http.Request)
+		Update(w http.ResponseWriter, r *http.Request)
+		Paginate(w http.ResponseWriter, r *http.Request)
+		Delete(w http.ResponseWriter, r *http.Request)
 	}
 
 	roleHandler struct {
 		service service.RoleService
+		logger  common.Logger
 	}
 )
 
-func NewRoleHandler(service service.RoleService) RoleHandler {
-	return &roleHandler{service: service}
+func NewRoleHandler(service service.RoleService, logger common.Logger) RoleHandler {
+	return &roleHandler{
+		service: service,
+		logger:  logger,
+	}
 }
 
-func (h *roleHandler) Save(res http.ResponseWriter, req *http.Request) {
-	var role entity.Role
-	if e := json.NewDecoder(req.Body).Decode(&role); e != nil {
-
-	}
+func (h *roleHandler) Save(w http.ResponseWriter, r *http.Request) {
+	role, _ := model.UnmarshalRoleDepartment(r.Body)
 	if e := h.service.Save(role); e != nil {
 
 	}
 }
 
-func (h *roleHandler) Update(res http.ResponseWriter, req *http.Request) {
+func (h *roleHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h *roleHandler) Paginate(res http.ResponseWriter, req *http.Request) {
+func (h *roleHandler) Paginate(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h *roleHandler) Delete(res http.ResponseWriter, req *http.Request) {
-	code := req.URL.Query().Get("code")
+func (h *roleHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	code := r.URL.Query().Get("code")
 	if e := h.service.Delete(code); e != nil {
 
 	}

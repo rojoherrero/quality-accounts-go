@@ -6,8 +6,7 @@ package mock
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	entity "github.com/rojoherrero/quality-accounts/app/model/entity"
-	request "github.com/rojoherrero/quality-accounts/app/model/request"
+	model "github.com/rojoherrero/quality-accounts/app/model"
 	reflect "reflect"
 )
 
@@ -35,7 +34,7 @@ func (m *MockRoleService) EXPECT() *MockRoleServiceMockRecorder {
 }
 
 // Save mocks base method
-func (m *MockRoleService) Save(role entity.Role) error {
+func (m *MockRoleService) Save(role model.RoleDepartment) error {
 	ret := m.ctrl.Call(m, "Save", role)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -47,7 +46,7 @@ func (mr *MockRoleServiceMockRecorder) Save(role interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockRoleService) Update(data request.RoleUpdate) error {
+func (m *MockRoleService) Update(data model.RoleDepartmentUpdate) error {
 	ret := m.ctrl.Call(m, "Update", data)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -59,9 +58,9 @@ func (mr *MockRoleServiceMockRecorder) Update(data interface{}) *gomock.Call {
 }
 
 // Paginate mocks base method
-func (m *MockRoleService) Paginate(start, end int) ([]entity.Role, error) {
+func (m *MockRoleService) Paginate(start, end int) ([]model.RoleDepartment, error) {
 	ret := m.ctrl.Call(m, "Paginate", start, end)
-	ret0, _ := ret[0].([]entity.Role)
+	ret0, _ := ret[0].([]model.RoleDepartment)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

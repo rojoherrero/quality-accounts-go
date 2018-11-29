@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx"
 	"github.com/nats-io/go-nats"
+	"github.com/rojoherrero/quality-common"
 	"net/http"
 )
 
@@ -13,8 +14,8 @@ type App struct {
 	api    *api
 }
 
-func InitApp(db *pgx.ConnPool, nc *nats.Conn) *App {
-	a := &App{api: newApi(db, nc), router: mux.NewRouter()}
+func InitApp(db *pgx.ConnPool, nc *nats.Conn, logger common.Logger) *App {
+	a := &App{api: newApi(db, nc, logger), router: mux.NewRouter()}
 	a.createRoutes()
 	return a
 

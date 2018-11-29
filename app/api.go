@@ -6,6 +6,7 @@ import (
 	"github.com/rojoherrero/quality-accounts/app/handler"
 	"github.com/rojoherrero/quality-accounts/app/repository"
 	"github.com/rojoherrero/quality-accounts/app/service"
+	"github.com/rojoherrero/quality-common"
 )
 
 type api struct {
@@ -13,7 +14,7 @@ type api struct {
 	department handler.DepartmentHandler
 }
 
-func newApi(db *pgx.ConnPool, nc *nats.Conn) *api {
+func newApi(db *pgx.ConnPool, nc *nats.Conn, logger common.Logger) *api {
 	return &api{
 		role:       initRoleHandler(db),
 		department: initDepartmentHandler(db),

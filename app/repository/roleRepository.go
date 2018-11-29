@@ -4,33 +4,37 @@ package repository
 
 import (
 	"github.com/jackc/pgx"
-	"github.com/rojoherrero/quality-accounts/app/model/entity"
-	"github.com/rojoherrero/quality-accounts/app/model/request"
+	"github.com/rojoherrero/quality-accounts/app/model"
+	"github.com/rojoherrero/quality-common"
 )
 
 type (
 	RoleRepository interface {
-		Save(role entity.Role) error
-		Update(data request.RoleUpdate) error
-		Paginate(start, end int) ([]entity.Role, error)
+		Save(role model.RoleDepartment) error
+		Update(data model.RoleDepartmentUpdate) error
+		Paginate(start, end int) ([]model.RoleDepartment, error)
 		Delete(code string) error
 	}
 
 	roleRepository struct {
-		db *pgx.ConnPool
+		db     *pgx.ConnPool
+		logger common.Logger
 	}
 )
 
-func NewRoleRepository(db *pgx.ConnPool) RoleRepository {
-	return &roleRepository{db: db}
+func NewRoleRepository(db *pgx.ConnPool, logger common.Logger) RoleRepository {
+	return &roleRepository{
+		db:     db,
+		logger: logger,
+	}
 }
 
-func (r *roleRepository) Save(role entity.Role) error {
+func (r *roleRepository) Save(role model.RoleDepartment) error {
 	_, e := r.db.Exec("insert into accounts.roles(code, description) value ($1, $2)", role.Code, role.Description)
 	return e
 }
 
-func (r *roleRepository) Update(data request.RoleUpdate) error {
+func (r *roleRepository) Update(data model.RoleDepartmentUpdate) error {
 	var e error
 	if data.NewCode == "" {
 		_, e = r.db.Exec("update accounts.roles set description = $1 where code = $2", data.NewDescription, data.OldCode)
@@ -41,19 +45,20 @@ func (r *roleRepository) Update(data request.RoleUpdate) error {
 	return e
 }
 
-func (r *roleRepository) Paginate(start, end int) ([]entity.Role, error) {
-	var roles []entity.Role
+func (r *roleRepository) Paginate(start, end int) ([]model.RoleDepartment, error) {
+	var roles []model.RoleDepartment
 	rows, e := r.db.Query("select r.code, r.description from accounts.roles r order by r.code asc limit $1 offset $2", end-start, start)
 	defer rows.Close()
 	if e != nil {
 		return roles, e
 	}
 	for rows.Next() {
-		var role entity.Role
+		var role model.RoleDepartment
 		e := rows.Scan(&role.Code, &role.Description)
 		if e != nil {
 			return roles, e
 		}
+		role.Type = model.Role
 		roles = append(roles, role)
 	}
 	return roles, nil
