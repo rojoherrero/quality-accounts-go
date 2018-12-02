@@ -28,3 +28,20 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/rojoherrero/quality-common"
+
+[[constraint]]
+  name = "github.com/jackc/pgx"
+  version = "3.2.0"
+
+[[constraint]]
+  name = "github.com/gorilla/mux"
+  version = "1.6.2"
+
+[[constraint]]
+  name = "github.com/nats-io/go-nats"
+  version = "1.6.0"
+
