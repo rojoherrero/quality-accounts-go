@@ -35,32 +35,47 @@ func NewDepartmentHandler(service service.DepartmentService, logger common.Logge
 
 func (h *departmentHandler) Save(w http.ResponseWriter, r *http.Request) {
 	role, _ := model.UnmarshalRoleDepartment(r.Body)
-	h.service.Save(role)
+	if e := h.service.Save(role); e != nil {
+		h.logger.Error(common.JSON(w, http.StatusInternalServerError, nil).Error())
+	}
 	common.JSON(w, http.StatusOK, nil)
 }
 
 func (h *departmentHandler) Update(w http.ResponseWriter, r *http.Request) {
 	update, _ := model.UnmarshallRoleDepartmentUpdate(r.Body)
-	h.service.Update(update)
+	if e := h.service.Update(update); e != nil{
+		h.logger.Error(common.JSON(w, http.StatusInternalServerError, nil).Error())
+	}
 	common.JSON(w, http.StatusOK, nil)
 }
 
 func (h *departmentHandler) Paginate(w http.ResponseWriter, r *http.Request) {
+	var e error
+	var start int
+	var end int
 	vars := mux.Vars(r)
-	start, e := strconv.Atoi(vars["start"])
-	if e != nil {
-		common.JSON(w, http.StatusBadRequest, nil)
+	if start, e = strconv.Atoi(vars["start"]); e != nil {
+		h.logger.Error(common.JSON(w, http.StatusBadRequest, nil).Error())
 	}
-	end, _ := strconv.Atoi(vars["end"])
-	if e != nil {
-		common.JSON(w, http.StatusBadRequest, nil)
+	if end, e = strconv.Atoi(vars["end"]); e != nil {
+		h.logger.Error(common.JSON(w, http.StatusBadRequest, nil).Error())
 	}
-	deps, _ := h.service.Paginate(start, end)
-	common.JSON(w, http.StatusOK, deps)
+	var deps model.RolesDepartments
+	if deps, e = h.service.Paginate(start, end); e != nil {
+		h.logger.Error(common.JSON(w, http.StatusInternalServerError, nil).Error())
+	}
+	var bytes []byte
+	if bytes, e = deps.Marshall(); e != nil {
+		h.logger.Error(common.JSON(w, http.StatusInternalServerError, nil).Error())
+	}
+	common.JSON(w, http.StatusOK, bytes)
 }
 
 func (h *departmentHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query().Get("code")
-	h.service.Delete(code)
+	if e := h.service.Delete(code); e != nil{
+		h.logger.Error(common.JSON(w, http.StatusInternalServerError, nil).Error())
+		return
+	}
 	common.JSON(w, http.StatusOK, nil)
 }

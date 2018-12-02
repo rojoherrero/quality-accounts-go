@@ -16,19 +16,19 @@ type api struct {
 
 func newApi(db *pgx.ConnPool, nc *nats.Conn, logger common.Logger) *api {
 	return &api{
-		role:       initRoleHandler(db),
-		department: initDepartmentHandler(db),
+		role:       initRoleHandler(db, logger),
+		department: initDepartmentHandler(db, logger),
 	}
 }
 
-func initRoleHandler(db *pgx.ConnPool) handler.RoleHandler {
-	r := repository.NewRoleRepository(db)
-	s := service.NewRoleService(r)
-	return handler.NewRoleHandler(s)
+func initRoleHandler(db *pgx.ConnPool, logger common.Logger) handler.RoleHandler {
+	r := repository.NewRoleRepository(db, logger)
+	s := service.NewRoleService(r, logger)
+	return handler.NewRoleHandler(s, logger)
 }
 
-func initDepartmentHandler(db *pgx.ConnPool) handler.DepartmentHandler {
-	r := repository.NewDepartmentRepository(db)
-	s := service.NewDepartmentService(r)
-	return handler.NewDepartmentHandler(s)
+func initDepartmentHandler(db *pgx.ConnPool, logger common.Logger) handler.DepartmentHandler {
+	r := repository.NewDepartmentRepository(db, logger)
+	s := service.NewDepartmentService(r, logger)
+	return handler.NewDepartmentHandler(s, logger)
 }

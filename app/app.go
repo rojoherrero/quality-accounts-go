@@ -15,7 +15,10 @@ type App struct {
 }
 
 func InitApp(db *pgx.ConnPool, nc *nats.Conn, logger common.Logger) *App {
-	a := &App{api: newApi(db, nc, logger), router: mux.NewRouter()}
+	a := &App{
+		api: newApi(db, nc, logger),
+		router: mux.NewRouter(),
+	}
 	a.createRoutes()
 	return a
 

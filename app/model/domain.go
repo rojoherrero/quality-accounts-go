@@ -18,6 +18,8 @@ type RoleDepartment struct {
 	Type        RoleDepartmentType `json:"type"`
 }
 
+type RolesDepartments []RoleDepartment
+
 func UnmarshalRoleDepartment(data io.ReadCloser) (RoleDepartment, error) {
 	var r RoleDepartment
 	e := json.NewDecoder(data).Decode(&r)
@@ -25,5 +27,9 @@ func UnmarshalRoleDepartment(data io.ReadCloser) (RoleDepartment, error) {
 }
 
 func (r *RoleDepartment) Marshall() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+func (r *RolesDepartments) Marshall() ([]byte, error) {
 	return json.Marshal(r)
 }

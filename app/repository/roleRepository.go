@@ -12,7 +12,7 @@ type (
 	RoleRepository interface {
 		Save(role model.RoleDepartment) error
 		Update(data model.RoleDepartmentUpdate) error
-		Paginate(start, end int) ([]model.RoleDepartment, error)
+		Paginate(start, end int) (model.RolesDepartments, error)
 		Delete(code string) error
 	}
 
@@ -45,8 +45,8 @@ func (r *roleRepository) Update(data model.RoleDepartmentUpdate) error {
 	return e
 }
 
-func (r *roleRepository) Paginate(start, end int) ([]model.RoleDepartment, error) {
-	var roles []model.RoleDepartment
+func (r *roleRepository) Paginate(start, end int) (model.RolesDepartments, error) {
+	var roles model.RolesDepartments
 	rows, e := r.db.Query("select r.code, r.description from accounts.roles r order by r.code asc limit $1 offset $2", end-start, start)
 	defer rows.Close()
 	if e != nil {

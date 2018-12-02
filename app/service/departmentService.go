@@ -12,7 +12,7 @@ type (
 	DepartmentService interface {
 		Save(dept model.RoleDepartment) error
 		Update(data model.RoleDepartmentUpdate) error
-		Paginate(start, end int) ([]model.RoleDepartment, error)
+		Paginate(start, end int) (model.RolesDepartments, error)
 		Delete(code string) error
 	}
 
@@ -37,7 +37,7 @@ func (s *departmentService) Update(data model.RoleDepartmentUpdate) error {
 	return s.repo.Update(data)
 }
 
-func (s *departmentService) Paginate(start, end int) ([]model.RoleDepartment, error) {
+func (s *departmentService) Paginate(start, end int) (model.RolesDepartments, error) {
 	return s.repo.Paginate(start, end)
 }
 

@@ -58,9 +58,9 @@ func (mr *MockRoleRepositoryMockRecorder) Update(data interface{}) *gomock.Call 
 }
 
 // Paginate mocks base method
-func (m *MockRoleRepository) Paginate(start, end int) ([]model.RoleDepartment, error) {
+func (m *MockRoleRepository) Paginate(start, end int) (model.RolesDepartments, error) {
 	ret := m.ctrl.Call(m, "Paginate", start, end)
-	ret0, _ := ret[0].([]model.RoleDepartment)
+	ret0, _ := ret[0].(model.RolesDepartments)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
