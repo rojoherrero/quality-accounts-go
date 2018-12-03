@@ -21,3 +21,4 @@ func UnmarshallRoleDepartmentUpdate(data io.ReadCloser) (RoleDepartmentUpdate, e
 func (du *RoleDepartmentUpdate) Marshall() ([]byte, error) {
 	return json.Marshal(du)
 }
+
