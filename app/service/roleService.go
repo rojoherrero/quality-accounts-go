@@ -11,7 +11,7 @@ import (
 type (
 	RoleService interface {
 		Save(role model.RoleDepartment) error
-		Update(data model.RoleDepartmentUpdate) error
+		Update(data model.RoleDepartment, code string) error
 		Paginate(start, end int) (model.RolesDepartments, error)
 		Delete(code string) error
 	}
@@ -33,8 +33,8 @@ func (s *roleService) Save(role model.RoleDepartment) error {
 	return s.service.Save(role)
 }
 
-func (s *roleService) Update(data model.RoleDepartmentUpdate) error {
-	return s.service.Update(data)
+func (s *roleService) Update(data model.RoleDepartment, code string) error {
+	return s.service.Update(data, code)
 }
 
 func (s *roleService) Paginate(start, end int) (model.RolesDepartments, error) {

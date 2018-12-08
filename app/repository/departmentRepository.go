@@ -11,7 +11,7 @@ import (
 type (
 	DepartmentRepository interface {
 		Save(dep model.RoleDepartment) error
-		Update(data model.RoleDepartmentUpdate) error
+		Update(data model.RoleDepartment, code string) error
 		Paginate(start, end int) (model.RolesDepartments, error)
 		Delete(code string) error
 	}
@@ -35,15 +35,11 @@ func (r *departmentRepository) Save(dep model.RoleDepartment) error {
 	return e
 }
 
-func (r *departmentRepository) Update(data model.RoleDepartmentUpdate) error {
-	var e error
-	if data.NewCode == "" {
-		_, e = r.db.Exec("update accounts.departments set description = $1 where code = $2", data.NewDescription, data.OldCode)
-	} else {
-		_, e = r.db.Exec("update accounts.departments set code = $1, description = $2 where code = $3", data.NewCode, data.NewDescription, data.OldCode)
+func (r *departmentRepository) Update(data model.RoleDepartment, code string) error {
+	if _, e := r.db.Exec("update accounts.departments set code = $1, description = $2 where code = $3", data.Code, data.Description, code); e != nil {
+		return e
 	}
-
-	return e
+	return nil
 }
 
 func (r *departmentRepository) Paginate(start, end int) (model.RolesDepartments, error) {

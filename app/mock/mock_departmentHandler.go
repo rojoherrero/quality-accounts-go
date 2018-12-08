@@ -5,8 +5,8 @@
 package mock
 
 import (
+	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
-	http "net/http"
 	reflect "reflect"
 )
 
@@ -34,41 +34,41 @@ func (m *MockDepartmentHandler) EXPECT() *MockDepartmentHandlerMockRecorder {
 }
 
 // Save mocks base method
-func (m *MockDepartmentHandler) Save(w http.ResponseWriter, r *http.Request) {
-	m.ctrl.Call(m, "Save", w, r)
+func (m *MockDepartmentHandler) Save(c *gin.Context) {
+	m.ctrl.Call(m, "Save", c)
 }
 
 // Save indicates an expected call of Save
-func (mr *MockDepartmentHandlerMockRecorder) Save(w, r interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockDepartmentHandler)(nil).Save), w, r)
+func (mr *MockDepartmentHandlerMockRecorder) Save(c interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockDepartmentHandler)(nil).Save), c)
 }
 
 // Update mocks base method
-func (m *MockDepartmentHandler) Update(w http.ResponseWriter, r *http.Request) {
-	m.ctrl.Call(m, "Update", w, r)
+func (m *MockDepartmentHandler) Update(c *gin.Context) {
+	m.ctrl.Call(m, "Update", c)
 }
 
 // Update indicates an expected call of Update
-func (mr *MockDepartmentHandlerMockRecorder) Update(w, r interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDepartmentHandler)(nil).Update), w, r)
+func (mr *MockDepartmentHandlerMockRecorder) Update(c interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDepartmentHandler)(nil).Update), c)
 }
 
 // Paginate mocks base method
-func (m *MockDepartmentHandler) Paginate(w http.ResponseWriter, r *http.Request) {
-	m.ctrl.Call(m, "Paginate", w, r)
+func (m *MockDepartmentHandler) Paginate(c *gin.Context) {
+	m.ctrl.Call(m, "Paginate", c)
 }
 
 // Paginate indicates an expected call of Paginate
-func (mr *MockDepartmentHandlerMockRecorder) Paginate(w, r interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Paginate", reflect.TypeOf((*MockDepartmentHandler)(nil).Paginate), w, r)
+func (mr *MockDepartmentHandlerMockRecorder) Paginate(c interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Paginate", reflect.TypeOf((*MockDepartmentHandler)(nil).Paginate), c)
 }
 
 // Delete mocks base method
-func (m *MockDepartmentHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	m.ctrl.Call(m, "Delete", w, r)
+func (m *MockDepartmentHandler) Delete(c *gin.Context) {
+	m.ctrl.Call(m, "Delete", c)
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockDepartmentHandlerMockRecorder) Delete(w, r interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDepartmentHandler)(nil).Delete), w, r)
+func (mr *MockDepartmentHandlerMockRecorder) Delete(c interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDepartmentHandler)(nil).Delete), c)
 }

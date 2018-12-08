@@ -11,7 +11,7 @@ import (
 type (
 	DepartmentService interface {
 		Save(dept model.RoleDepartment) error
-		Update(data model.RoleDepartmentUpdate) error
+		Update(data model.RoleDepartment, code string) error
 		Paginate(start, end int) (model.RolesDepartments, error)
 		Delete(code string) error
 	}
@@ -33,8 +33,8 @@ func (s *departmentService) Save(dept model.RoleDepartment) error {
 	return s.repo.Save(dept)
 }
 
-func (s *departmentService) Update(data model.RoleDepartmentUpdate) error {
-	return s.repo.Update(data)
+func (s *departmentService) Update(data model.RoleDepartment, code string) error {
+	return s.repo.Update(data, code)
 }
 
 func (s *departmentService) Paginate(start, end int) (model.RolesDepartments, error) {
