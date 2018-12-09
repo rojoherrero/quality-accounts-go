@@ -1,8 +1,6 @@
 package model
 
 import (
-	"encoding/json"
-	"io"
 	"time"
 )
 
@@ -21,20 +19,6 @@ type RoleDepartment struct {
 
 type RolesDepartments []RoleDepartment
 
-func UnmarshalRoleDepartment(data io.ReadCloser) (RoleDepartment, error) {
-	var r RoleDepartment
-	e := json.NewDecoder(data).Decode(&r)
-	return r, e
-}
-
-func (r *RoleDepartment) Marshall() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func (r *RolesDepartments) Marshall() ([]byte, error) {
-	return json.Marshal(r)
-}
-
 type Account struct {
 	Username    string           `json:"username"`
 	Password    string           `json:"password"`
@@ -46,17 +30,3 @@ type Account struct {
 }
 
 type Accounts []Account
-
-func UnmarshallAccount(data io.ReadCloser) (Account, error) {
-	var a Account
-	e := json.NewDecoder(data).Decode(&a)
-	return a, e
-}
-
-func (a *Account) Marshall() ([]byte, error) {
-	return json.Marshal(a)
-}
-
-func (a *Accounts) Marshall() ([]byte, error) {
-	return json.Marshal(a)
-}
