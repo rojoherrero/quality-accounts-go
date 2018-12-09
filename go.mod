@@ -5,6 +5,7 @@ require (
 	github.com/gin-gonic/gin v1.3.0 // indirect
 	github.com/golang/mock v1.1.1
 	github.com/golang/protobuf v1.2.0 // indirect
+	github.com/gorilla/mux v1.6.2 // indirect
 	github.com/hashicorp/consul v1.4.0 // indirect
 	github.com/jackc/pgx v3.3.0+incompatible
 	github.com/mattn/go-isatty v0.0.4 // indirect
