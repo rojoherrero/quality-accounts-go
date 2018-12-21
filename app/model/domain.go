@@ -1,32 +1,24 @@
 package model
 
-import (
-	"time"
-)
+import "time"
 
-type RoleDepartmentType string
-
-const (
-	Role       RoleDepartmentType = "Role"
-	Department RoleDepartmentType = "Department"
-)
-
-type RoleDepartment struct {
-	Code        string             `json:"code"`
-	Description string             `json:"description"`
-	Type        RoleDepartmentType `json:"type"`
+type User struct {
+	ID          int64        `json:"id", db:"user_id"`
+	FullName    string       `json:"fullName", db:"full_name"`
+	UserName    string       `json:"userName",db:"user_name"`
+	Password    string       `json:"password",db:"password"`
+	Created     time.Time    `json:"created",db:"created"`
+	Updated     time.Time    `json:"updated", db:"updated"`
+	Roles       []Role       `json:"roles", db:"-"`
+	Departments []Department `json:"departments", db:"-"`
 }
 
-type RolesDepartments []RoleDepartment
-
-type Account struct {
-	Username    string           `json:"username"`
-	Password    string           `json:"password"`
-	Roles       RolesDepartments `json:"roles"`
-	Departments RolesDepartments `json:"departments"`
-	FullName    string           `json:"fullName"`
-	Creation    time.Time        `json:"creation"`
-	Update      time.Time        `json:"update"`
+type Role struct {
+	Code string `json:"code", db:"role_code"`
+	Name string `json:"name", db:"role_name"`
 }
 
-type Accounts []Account
+type Department struct {
+	Code string `json:"code", db:"role_code"`
+	Name string `json:"name", db:"role_name"`
+}
