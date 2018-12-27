@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/rojoherrero/quality-accounts/app/model"
-	"golang.org/x/crypto/bcrypt"
 	"strings"
 )
 
@@ -67,7 +66,7 @@ func (r *userRepository) Save(ctx context.Context, user model.UserCreationDto) e
 
 	departmentsRolesUpdateQuery, departmentsRolesUpdateArgs := createUserDepartmentsRolesInsertQuery(user.DepartmentRoles, userId)
 	departmentsRolesUpdateStmt, _ := tx.Prepare(departmentsRolesUpdateQuery)
-	if _, e = departmentsRolesUpdateStmt.ExecContext(ctx, departmentsRolesUpdateArgs); e != nil {
+	if _, e := departmentsRolesUpdateStmt.ExecContext(ctx, departmentsRolesUpdateArgs); e != nil {
 		return e
 	}
 
@@ -75,23 +74,18 @@ func (r *userRepository) Save(ctx context.Context, user model.UserCreationDto) e
 }
 
 func (r *userRepository) Update(ctx context.Context, user model.UserCreationDto) error {
-	hash, e := r.hashPassword(user.Password)
-	if e != nil {
-		return e
-	}
-	user.Password = string(hash)
 	tx, _ := r.db.Begin()
 	userUpdateStmt, _ := tx.Prepare(updateUserQuery)
-	if _, e = userUpdateStmt.ExecContext(ctx, user.ID, user.UserName, user.Password, user.FullName); e != nil {
+	if _, e := userUpdateStmt.ExecContext(ctx, user.ID, user.UserName, user.Password, user.FullName); e != nil {
 		return e
 	}
 
-	if _, e = tx.ExecContext(ctx, deleteUserDepartmentsRolesQuery, user.ID); e != nil {
+	if _, e := tx.ExecContext(ctx, deleteUserDepartmentsRolesQuery, user.ID); e != nil {
 		return e
 	}
 	departmentsRolesUpdateQuery, departmentsRolesUpdateArgs := createUserDepartmentsRolesInsertQuery(user.DepartmentRoles, user.ID)
 	departmentsRolesUpdateStmt, _ := tx.Prepare(departmentsRolesUpdateQuery)
-	if _, e = departmentsRolesUpdateStmt.ExecContext(ctx, departmentsRolesUpdateArgs); e != nil {
+	if _, e := departmentsRolesUpdateStmt.ExecContext(ctx, departmentsRolesUpdateArgs); e != nil {
 		return e
 	}
 
