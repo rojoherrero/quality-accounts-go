@@ -1,46 +1,42 @@
 package service
 
 import (
+	"context"
 	"github.com/rojoherrero/quality-accounts/app/model"
 	"github.com/rojoherrero/quality-accounts/app/repository"
-	"github.com/rojoherrero/quality-common"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=../mock/mock_$GOFILE -package=mock
 
 type (
 	DepartmentService interface {
-		Save(dept model.RoleDepartment) error
-		Update(data model.RoleDepartment, code string) error
-		Paginate(start, end int) (model.RolesDepartments, error)
-		Delete(code string) error
+		Save(ctx context.Context, department []model.Department) error
+		Update(ctx context.Context, department model.Department, oldCode string) error
+		Paginate(ctx context.Context, start, end int) ([]model.Department, error)
+		Delete(ctx context.Context, code string) error
 	}
 
 	departmentService struct {
-		repo   repository.DepartmentRepository
-		logger common.Logger
+		repo repository.DepartmentRepository
 	}
 )
 
-func NewDepartmentService(repo repository.DepartmentRepository, logger common.Logger) DepartmentService {
-	return &departmentService{
-		repo:   repo,
-		logger: logger,
-	}
+func NewDepartmentService(repo repository.DepartmentRepository) DepartmentService {
+	return &departmentService{repo: repo}
 }
 
-func (s *departmentService) Save(dept model.RoleDepartment) error {
-	return s.repo.Save(dept)
+func (s *departmentService) Save(ctx context.Context, departments []model.Department) error {
+	return s.repo.Save(ctx, departments)
 }
 
-func (s *departmentService) Update(data model.RoleDepartment, code string) error {
-	return s.repo.Update(data, code)
+func (s *departmentService) Update(ctx context.Context, department model.Department, oldCode string) error {
+	return s.repo.Update(ctx, department, oldCode)
 }
 
-func (s *departmentService) Paginate(start, end int) (model.RolesDepartments, error) {
-	return s.repo.Paginate(start, end)
+func (s *departmentService) Paginate(ctx context.Context, start, end int) ([]model.Department, error) {
+	return s.repo.Paginate(ctx, start, end)
 }
 
-func (s *departmentService) Delete(code string) error {
-	return s.repo.Delete(code)
+func (s *departmentService) Delete(ctx context.Context, code string) error {
+	return s.repo.Delete(ctx, code)
 }

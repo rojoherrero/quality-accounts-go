@@ -48,7 +48,7 @@ type (
 		Save(ctx context.Context, user model.UserCreationDto) error
 		Update(ctx context.Context, user model.UserCreationDto) error
 		Paginate(ctx context.Context, start, end int64) (model.PropertyMapSlice, error)
-		Delete(ctx context.Context, code string) error
+		Delete(ctx context.Context, id int64) error
 		GetLogInData(ctx context.Context, username string) error
 	}
 
@@ -60,11 +60,6 @@ func NewAccountRepository(db *sqlx.DB) UserRepository {
 }
 
 func (r *userRepository) Save(ctx context.Context, user model.UserCreationDto) error {
-	hash, e := r.hashPassword(user.Password)
-	if e != nil {
-		return e
-	}
-	user.Password = string(hash)
 	tx, _ := r.db.Begin()
 	userStmt, _ := tx.Prepare(insertUserQuery)
 	result, _ := userStmt.ExecContext(ctx, user.UserName, user.Password, user.FullName)
@@ -121,12 +116,6 @@ func createUserDepartmentsRolesInsertQuery(rolesDepartments map[string][]string,
 	return fmt.Sprintf(insertUserDepartmentsRolesBaseQuery, strings.Join(valueStrings, ",")), valueArgs
 }
 
-
-func (r *userRepository) hashPassword(rawPassword string) (string, error) {
-	hash, e := bcrypt.GenerateFromPassword([]byte(rawPassword), bcrypt.DefaultCost)
-	return string(hash), e
-}
-
 func (r *userRepository) Paginate(ctx context.Context, start, end int64) (model.PropertyMapSlice, error) {
 	stmt, _ := r.db.PrepareContext(ctx, paginateUsersQuery)
 	rows, e := stmt.Query(start, end-start)
@@ -145,8 +134,8 @@ func (r *userRepository) Paginate(ctx context.Context, start, end int64) (model.
 	return users, nil
 }
 
-func (r *userRepository) Delete(ctx context.Context, code string) error {
-	if _, e := r.db.ExecContext(ctx, deleteUserQuery, code); e != nil {
+func (r *userRepository) Delete(ctx context.Context, id int64) error {
+	if _, e := r.db.ExecContext(ctx, deleteUserQuery, id); e != nil {
 		return e
 	}
 	return nil
