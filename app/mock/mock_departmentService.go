@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	model "github.com/rojoherrero/quality-accounts/app/model"
 	reflect "reflect"
@@ -34,50 +35,50 @@ func (m *MockDepartmentService) EXPECT() *MockDepartmentServiceMockRecorder {
 }
 
 // Save mocks base method
-func (m *MockDepartmentService) Save(dept model.RoleDepartment) error {
-	ret := m.ctrl.Call(m, "Save", dept)
+func (m *MockDepartmentService) Save(ctx context.Context, department []model.Department) error {
+	ret := m.ctrl.Call(m, "Save", ctx, department)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Save indicates an expected call of Save
-func (mr *MockDepartmentServiceMockRecorder) Save(dept interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockDepartmentService)(nil).Save), dept)
+func (mr *MockDepartmentServiceMockRecorder) Save(ctx, department interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockDepartmentService)(nil).Save), ctx, department)
 }
 
 // Update mocks base method
-func (m *MockDepartmentService) Update(data model.RoleDepartmentUpdate) error {
-	ret := m.ctrl.Call(m, "Update", data)
+func (m *MockDepartmentService) Update(ctx context.Context, department model.Department, oldCode string) error {
+	ret := m.ctrl.Call(m, "Update", ctx, department, oldCode)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockDepartmentServiceMockRecorder) Update(data interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDepartmentService)(nil).Update), data)
+func (mr *MockDepartmentServiceMockRecorder) Update(ctx, department, oldCode interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDepartmentService)(nil).Update), ctx, department, oldCode)
 }
 
 // Paginate mocks base method
-func (m *MockDepartmentService) Paginate(start, end int) (model.RolesDepartments, error) {
-	ret := m.ctrl.Call(m, "Paginate", start, end)
-	ret0, _ := ret[0].(model.RolesDepartments)
+func (m *MockDepartmentService) Paginate(ctx context.Context, start, end int) ([]model.Department, error) {
+	ret := m.ctrl.Call(m, "Paginate", ctx, start, end)
+	ret0, _ := ret[0].([]model.Department)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Paginate indicates an expected call of Paginate
-func (mr *MockDepartmentServiceMockRecorder) Paginate(start, end interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Paginate", reflect.TypeOf((*MockDepartmentService)(nil).Paginate), start, end)
+func (mr *MockDepartmentServiceMockRecorder) Paginate(ctx, start, end interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Paginate", reflect.TypeOf((*MockDepartmentService)(nil).Paginate), ctx, start, end)
 }
 
 // Delete mocks base method
-func (m *MockDepartmentService) Delete(code string) error {
-	ret := m.ctrl.Call(m, "Delete", code)
+func (m *MockDepartmentService) Delete(ctx context.Context, code string) error {
+	ret := m.ctrl.Call(m, "Delete", ctx, code)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockDepartmentServiceMockRecorder) Delete(code interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDepartmentService)(nil).Delete), code)
+func (mr *MockDepartmentServiceMockRecorder) Delete(ctx, code interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDepartmentService)(nil).Delete), ctx, code)
 }

@@ -1,34 +1,41 @@
-package app
+package server
 
 import (
-	"github.com/jackc/pgx"
+	"github.com/jmoiron/sqlx"
 	"github.com/nats-io/go-nats"
 	"github.com/rojoherrero/quality-accounts/app/handler"
 	"github.com/rojoherrero/quality-accounts/app/repository"
 	"github.com/rojoherrero/quality-accounts/app/service"
-	"github.com/rojoherrero/quality-common"
 )
 
 type api struct {
 	role       handler.RoleHandler
 	department handler.DepartmentHandler
+	user       handler.UserHandler
 }
 
-func newApi(db *pgx.ConnPool, nc *nats.Conn, logger common.Logger) *api {
+func newApi(db *sqlx.DB, nc *nats.Conn) *api {
 	return &api{
-		role:       initRoleHandler(db, logger),
-		department: initDepartmentHandler(db, logger),
+		role:       initRoleHandler(db),
+		department: initDepartmentHandler(db),
+		user:       initUserHandler(db),
 	}
 }
 
-func initRoleHandler(db *pgx.ConnPool, logger common.Logger) handler.RoleHandler {
-	r := repository.NewRoleRepository(db, logger)
-	s := service.NewRoleService(r, logger)
-	return handler.NewRoleHandler(s, logger)
+func initRoleHandler(db *sqlx.DB) handler.RoleHandler {
+	r := repository.NewRoleRepository(db)
+	s := service.NewRoleService(r)
+	return handler.NewRoleHandler(s)
 }
 
-func initDepartmentHandler(db *pgx.ConnPool, logger common.Logger) handler.DepartmentHandler {
-	r := repository.NewDepartmentRepository(db, logger)
-	s := service.NewDepartmentService(r, logger)
-	return handler.NewDepartmentHandler(s, logger)
+func initDepartmentHandler(db *sqlx.DB) handler.DepartmentHandler {
+	r := repository.NewDepartmentRepository(db)
+	s := service.NewDepartmentService(r)
+	return handler.NewDepartmentHandler(s)
+}
+
+func initUserHandler(db *sqlx.DB) handler.UserHandler {
+	r := repository.NewUserRepository(db)
+	s := service.NewUserService(r)
+	return handler.NewUserHandler(s)
 }

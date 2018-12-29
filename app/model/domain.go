@@ -17,16 +17,19 @@ type User struct {
 	Roles       []Role       `json:"roles,omitempty" db:""`
 	Departments []Department `json:"departments,omitempty" db:""`
 }
+type Users []User
 
 type Role struct {
 	Code string `json:"code" db:"role_code"`
 	Name string `json:"name" db:"role_name"`
 }
+type Roles []Role
 
 type Department struct {
 	Code string `json:"code" db:"department_code"`
 	Name string `json:"name" db:"department_name"`
 }
+type Departments []Department
 
 type PropertyMap map[string]interface{}
 type PropertyMapSlice []PropertyMap

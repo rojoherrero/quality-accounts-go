@@ -1,32 +1,32 @@
 package service
 
+//go:generate mockgen -source=$GOFILE -destination=../mock/mock_$GOFILE -package=mock
+
 import (
 	"context"
 	"github.com/rojoherrero/quality-accounts/app/model"
 	"github.com/rojoherrero/quality-accounts/app/repository"
-	"github.com/rojoherrero/quality-common"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type (
-	AccountService interface {
+	UserService interface {
 		Save(ctx context.Context, user model.UserCreationDto) error
 		Update(ctx context.Context, user model.UserCreationDto) error
 		Paginate(ctx context.Context, start, end int64) (model.PropertyMapSlice, error)
 		Delete(ctx context.Context, id int64) error
-		GetLoginData(username, password string) model.User
 	}
 
-	accountService struct {
+	userService struct {
 		repo   repository.UserRepository
 	}
 )
 
-func NewAccountService(repo repository.UserRepository) AccountService {
-	return &accountService{repo}
+func NewUserService(repo repository.UserRepository) UserService {
+	return &userService{repo}
 }
 
-func (s *accountService) Save(ctx context.Context, user model.UserCreationDto) error {
+func (s *userService) Save(ctx context.Context, user model.UserCreationDto) error {
 	hashedPwd, e := s.hashPassword(user.Password)
 	if e != nil {
 		return e
@@ -35,7 +35,7 @@ func (s *accountService) Save(ctx context.Context, user model.UserCreationDto) e
 	return s.repo.Save(ctx, user)
 }
 
-func (s *accountService) Update(ctx context.Context, user model.UserCreationDto) error {
+func (s *userService) Update(ctx context.Context, user model.UserCreationDto) error {
 	hashedPwd, e := s.hashPassword(user.Password)
 	if e != nil {
 		return e
@@ -44,19 +44,15 @@ func (s *accountService) Update(ctx context.Context, user model.UserCreationDto)
 	return s.repo.Update(ctx, user)
 }
 
-func (s *accountService) hashPassword(password string) (string, error) {
+func (s *userService) hashPassword(password string) (string, error) {
 	hash, e := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(hash), e
 }
 
-func (s *accountService) Paginate(ctx context.Context,start, end int64) (model.PropertyMapSlice, error) {
+func (s *userService) Paginate(ctx context.Context,start, end int64) (model.PropertyMapSlice, error) {
 	return s.repo.Paginate(ctx, start, end)
 }
 
-func (s *accountService) Delete(ctx context.Context, id int64) error {
+func (s *userService) Delete(ctx context.Context, id int64) error {
 	return s.repo.Delete(ctx, id)
-}
-
-func (s *accountService) GetLoginData(username, password string) model.User {
-	return nil
 }

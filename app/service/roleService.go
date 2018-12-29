@@ -14,7 +14,7 @@ type (
 		Save(ctx context.Context, role []model.Role) error
 		Update(ctx context.Context, data model.Role, oldCode string) error
 		Paginate(ctx context.Context, start, end int) ([]model.Role, error)
-		Delete(ctx context.Context, id int64) error
+		Delete(ctx context.Context, code string) error
 	}
 
 	roleService struct {
@@ -38,6 +38,6 @@ func (s *roleService) Paginate(ctx context.Context, start, end int) ([]model.Rol
 	return s.service.Paginate(ctx, start, end)
 }
 
-func (s *roleService) Delete(ctx context.Context, id int64) error {
-	return s.service.Delete(ctx, id)
+func (s *roleService) Delete(ctx context.Context, code string) error {
+	return s.service.Delete(ctx, code)
 }
