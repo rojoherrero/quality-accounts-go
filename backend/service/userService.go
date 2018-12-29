@@ -4,8 +4,8 @@ package service
 
 import (
 	"context"
-	"github.com/rojoherrero/quality-accounts/app/model"
-	"github.com/rojoherrero/quality-accounts/app/repository"
+	"github.com/rojoherrero/quality-accounts/backend/model"
+	"github.com/rojoherrero/quality-accounts/backend/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 

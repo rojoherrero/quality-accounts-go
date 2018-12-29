@@ -6,8 +6,8 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rojoherrero/quality-accounts/app/model"
-	"github.com/rojoherrero/quality-accounts/app/service"
+	"github.com/rojoherrero/quality-accounts/backend/model"
+	"github.com/rojoherrero/quality-accounts/backend/service"
 	"net/http"
 	"strconv"
 )

@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"github.com/rojoherrero/quality-accounts/app/model"
+	"github.com/rojoherrero/quality-accounts/backend/model"
 	"strings"
 )
 

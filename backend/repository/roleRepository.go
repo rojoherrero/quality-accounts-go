@@ -8,7 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"strings"
 
-	"github.com/rojoherrero/quality-accounts/app/model"
+	"github.com/rojoherrero/quality-accounts/backend/model"
 )
 
 const (

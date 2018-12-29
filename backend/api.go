@@ -3,9 +3,9 @@ package server
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/nats-io/go-nats"
-	"github.com/rojoherrero/quality-accounts/app/handler"
-	"github.com/rojoherrero/quality-accounts/app/repository"
-	"github.com/rojoherrero/quality-accounts/app/service"
+	"github.com/rojoherrero/quality-accounts/backend/handler"
+	"github.com/rojoherrero/quality-accounts/backend/repository"
+	"github.com/rojoherrero/quality-accounts/backend/service"
 )
 
 type api struct {

@@ -7,7 +7,7 @@ package mock
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/rojoherrero/quality-accounts/app/model"
+	model "github.com/rojoherrero/quality-accounts/backend/model"
 	reflect "reflect"
 )
 

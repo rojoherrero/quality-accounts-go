@@ -4,53 +4,60 @@ package handler
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
-	"github.com/rojoherrero/quality-accounts/app/model"
-	"github.com/rojoherrero/quality-accounts/app/service"
 	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/rojoherrero/quality-accounts/backend/model"
+	"github.com/rojoherrero/quality-accounts/backend/service"
+)
+
+const (
+	_10SecondsTimeOut = 10 * time.Second
 )
 
 type (
-	UserHandler interface {
+	RoleHandler interface {
 		Save(c *gin.Context)
 		Update(c *gin.Context)
 		Paginate(c *gin.Context)
 		Delete(c *gin.Context)
 	}
 
-	userHandler struct {
-		service service.UserService
+	roleHandler struct {
+		service service.RoleService
 	}
 )
 
-func NewUserHandler(service service.UserService) UserHandler {
-	return &userHandler{service: service}
+func NewRoleHandler(service service.RoleService) RoleHandler {
+	return &roleHandler{service}
 }
 
-func (h *userHandler) Save(c *gin.Context) {
-	var user model.UserCreationDto
-	_ = c.BindJSON(&user)
+func (h *roleHandler) Save(c *gin.Context) {
+	var role []model.Role
 	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
-	if e := h.service.Save(ctx, user); e != nil {
+	_ = c.BindJSON(&role)
+	if e := h.service.Save(ctx, role); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
 	c.JSON(http.StatusOK, nil)
 }
 
-func (h *userHandler) Update(c *gin.Context) {
-	var user model.UserCreationDto
-	_ = c.BindJSON(&user)
+func (h *roleHandler) Update(c *gin.Context) {
+	var update model.Role
+	_ = c.BindJSON(&update)
+	code := c.Query("code")
 	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
-	if e := h.service.Update(ctx, user); e != nil {
+	if e := h.service.Update(ctx, update, code); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
 	c.JSON(http.StatusOK, nil)
 }
 
-func (h *userHandler) Paginate(c *gin.Context) {
+func (h *roleHandler) Paginate(c *gin.Context) {
 	start, e := strconv.Atoi(c.Param("start"))
 	if e != nil {
 		c.JSON(http.StatusBadRequest, nil)
@@ -62,7 +69,7 @@ func (h *userHandler) Paginate(c *gin.Context) {
 		return
 	}
 	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
-	roles, e := h.service.Paginate(ctx, int64(start), int64(end))
+	roles, e := h.service.Paginate(ctx, start, end)
 	if e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
@@ -70,14 +77,10 @@ func (h *userHandler) Paginate(c *gin.Context) {
 	c.JSON(http.StatusOK, roles)
 }
 
-func (h *userHandler) Delete(c *gin.Context) {
-	userId, e := strconv.Atoi(c.Query("userId"))
-	if e != nil {
-		c.JSON(http.StatusBadRequest, nil)
-		return
-	}
+func (h *roleHandler) Delete(c *gin.Context) {
+	code := c.Query("code")
 	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
-	if e := h.service.Delete(ctx, int64(userId)); e != nil {
+	if e := h.service.Delete(ctx, code); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
