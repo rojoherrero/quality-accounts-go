@@ -12,7 +12,7 @@ import (
 type (
 	RoleService interface {
 		Save(ctx context.Context, role []model.Role) error
-		Update(ctx context.Context, data model.Role, oldCode string) error
+		Update(ctx context.Context, data model.Role) error
 		Paginate(ctx context.Context, start, end int) ([]model.Role, error)
 		Delete(ctx context.Context, code string) error
 	}
@@ -30,8 +30,8 @@ func (s *roleService) Save(ctx context.Context, role []model.Role) error {
 	return s.service.Save(ctx, role)
 }
 
-func (s *roleService) Update(ctx context.Context, data model.Role, oldCode string) error {
-	return s.service.Update(ctx, data, oldCode)
+func (s *roleService) Update(ctx context.Context, data model.Role) error {
+	return s.service.Update(ctx, data)
 }
 
 func (s *roleService) Paginate(ctx context.Context, start, end int) ([]model.Role, error) {

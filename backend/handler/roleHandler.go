@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	_10SecondsTimeOut = 10 * time.Second
+	_10SecondsTimeOut = 100 * time.Hour
 )
 
 type (
@@ -48,9 +48,8 @@ func (h *roleHandler) Save(c *gin.Context) {
 func (h *roleHandler) Update(c *gin.Context) {
 	var update model.Role
 	_ = c.BindJSON(&update)
-	code := c.Query("code")
 	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
-	if e := h.service.Update(ctx, update, code); e != nil {
+	if e := h.service.Update(ctx, update); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
@@ -58,12 +57,12 @@ func (h *roleHandler) Update(c *gin.Context) {
 }
 
 func (h *roleHandler) Paginate(c *gin.Context) {
-	start, e := strconv.Atoi(c.Param("start"))
+	start, e := strconv.Atoi(c.Query("start"))
 	if e != nil {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	end, e := strconv.Atoi(c.Param("end"))
+	end, e := strconv.Atoi(c.Query("end"))
 	if e != nil {
 		c.JSON(http.StatusBadRequest, nil)
 		return

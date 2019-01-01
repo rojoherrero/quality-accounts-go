@@ -11,7 +11,7 @@ import (
 type (
 	DepartmentService interface {
 		Save(ctx context.Context, department []model.Department) error
-		Update(ctx context.Context, department model.Department, oldCode string) error
+		Update(ctx context.Context, department model.Department) error
 		Paginate(ctx context.Context, start, end int) ([]model.Department, error)
 		Delete(ctx context.Context, code string) error
 	}
@@ -29,8 +29,8 @@ func (s *departmentService) Save(ctx context.Context, departments []model.Depart
 	return s.repo.Save(ctx, departments)
 }
 
-func (s *departmentService) Update(ctx context.Context, department model.Department, oldCode string) error {
-	return s.repo.Update(ctx, department, oldCode)
+func (s *departmentService) Update(ctx context.Context, department model.Department) error {
+	return s.repo.Update(ctx, department)
 }
 
 func (s *departmentService) Paginate(ctx context.Context, start, end int) ([]model.Department, error) {

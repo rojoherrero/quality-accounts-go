@@ -43,9 +43,8 @@ func (h *departmentHandler) Save(c *gin.Context) {
 func (h *departmentHandler) Update(c *gin.Context) {
 	var department model.Department
 	c.BindJSON(&department)
-	code := c.Query("code")
 	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
-	if e := h.service.Update(ctx, department, code); e != nil {
+	if e := h.service.Update(ctx, department); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
@@ -56,11 +55,11 @@ func (h *departmentHandler) Paginate(c *gin.Context) {
 	var e error
 	var start int
 	var end int
-	if start, e = strconv.Atoi(c.Param("start")); e != nil {
+	if start, e = strconv.Atoi(c.Query("start")); e != nil {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	if end, e = strconv.Atoi(c.Param("end")); e != nil {
+	if end, e = strconv.Atoi(c.Query("end")); e != nil {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}

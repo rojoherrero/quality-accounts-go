@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	insertUserQuery    = "insert into accounts.users(full_name, user_name, password) values ($1, $2, $3)"
+	insertUserQuery    = "insert into accounts.users(full_name, user_name, password) values ($1, $2, $3) returning id"
 	updateUserQuery    = `update accounts.users 
 							 set full_name = $1,
 							     user_name = $2,
@@ -59,14 +59,15 @@ func NewUserRepository(db *sqlx.DB) UserRepository {
 }
 
 func (r *userRepository) Save(ctx context.Context, user model.UserCreationDto) error {
-	tx, _ := r.db.Begin()
-	userStmt, _ := tx.Prepare(insertUserQuery)
-	result, _ := userStmt.ExecContext(ctx, user.UserName, user.Password, user.FullName)
-	userId, _ := result.LastInsertId()
-
+	tx, _ := r.db.Beginx()
+	var userId int64
+	if e := tx.Get(&userId, insertUserQuery, user.FullName, user.UserName, user.Password); e != nil {
+		tx.Rollback()
+		return e
+	}
 	departmentsRolesUpdateQuery, departmentsRolesUpdateArgs := createUserDepartmentsRolesInsertQuery(user.DepartmentRoles, userId)
-	departmentsRolesUpdateStmt, _ := tx.Prepare(departmentsRolesUpdateQuery)
-	if _, e := departmentsRolesUpdateStmt.ExecContext(ctx, departmentsRolesUpdateArgs); e != nil {
+	if _, e := tx.ExecContext(ctx, departmentsRolesUpdateQuery, departmentsRolesUpdateArgs...); e != nil {
+		tx.Rollback()
 		return e
 	}
 
@@ -75,55 +76,43 @@ func (r *userRepository) Save(ctx context.Context, user model.UserCreationDto) e
 
 func (r *userRepository) Update(ctx context.Context, user model.UserCreationDto) error {
 	tx, _ := r.db.Begin()
-	userUpdateStmt, _ := tx.Prepare(updateUserQuery)
-	if _, e := userUpdateStmt.ExecContext(ctx, user.ID, user.UserName, user.Password, user.FullName); e != nil {
+	if _, e := tx.ExecContext(ctx, updateUserQuery, user.FullName, user.UserName, user.Password, user.ID); e != nil {
+		tx.Rollback()
 		return e
+	}
+	if len(user.DepartmentRoles.DepartmentCode) != 0{
+		if _, e := tx.ExecContext(ctx, deleteUserDepartmentsRolesQuery, user.ID); e != nil {
+			tx.Rollback()
+			return e
+		}
+		departmentsRolesUpdateQuery, departmentsRolesUpdateArgs := createUserDepartmentsRolesInsertQuery(user.DepartmentRoles, user.ID)
+		if _, e := tx.ExecContext(ctx, departmentsRolesUpdateQuery, departmentsRolesUpdateArgs...); e != nil {
+			return e
+		}
 	}
 
-	if _, e := tx.ExecContext(ctx, deleteUserDepartmentsRolesQuery, user.ID); e != nil {
-		return e
-	}
-	departmentsRolesUpdateQuery, departmentsRolesUpdateArgs := createUserDepartmentsRolesInsertQuery(user.DepartmentRoles, user.ID)
-	departmentsRolesUpdateStmt, _ := tx.Prepare(departmentsRolesUpdateQuery)
-	if _, e := departmentsRolesUpdateStmt.ExecContext(ctx, departmentsRolesUpdateArgs); e != nil {
-		return e
-	}
-
+	tx.Commit()
 	return nil
 }
 
-func createUserDepartmentsRolesInsertQuery(rolesDepartments map[string][]string, userId int64) (string, []interface{}) {
+func createUserDepartmentsRolesInsertQuery(departmentRoles model.DepartmentRoles, userId int64) (string, []interface{}) {
 	numberOfColumns := 3
 	valueStrings := make([]string, 0)
 	valueArgs := make([]interface{}, 0)
-	i := 0
-	for departmentCode, roles := range rolesDepartments {
-		for _, roleCode := range roles {
-			dollarNumberSeed := i * numberOfColumns
-			valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d)", dollarNumberSeed+1, dollarNumberSeed+2, dollarNumberSeed+3))
-			valueArgs = append(valueArgs, userId)
-			valueArgs = append(valueArgs, roleCode)
-			valueArgs = append(valueArgs, departmentCode)
-			i++
-		}
+	for i, roleCode := range departmentRoles.RolesCodes {
+		dollarNumberSeed := i * numberOfColumns
+		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d)", dollarNumberSeed+1, dollarNumberSeed+2, dollarNumberSeed+3))
+		valueArgs = append(valueArgs, userId)
+		valueArgs = append(valueArgs, roleCode)
+		valueArgs = append(valueArgs, departmentRoles.DepartmentCode)
 	}
 	return fmt.Sprintf(insertUserDepartmentsRolesBaseQuery, strings.Join(valueStrings, ",")), valueArgs
 }
 
 func (r *userRepository) Paginate(ctx context.Context, start, end int64) (model.PropertyMapSlice, error) {
-	stmt, _ := r.db.PrepareContext(ctx, paginateUsersQuery)
-	rows, e := stmt.Query(start, end-start)
-	if e != nil {
-		return nil, e
-	}
-	defer rows.Close()
 	var users model.PropertyMapSlice
-	for rows.Next() {
-		var user model.PropertyMap
-		if e := rows.Scan(&user); e != nil {
-			return users, e
-		}
-		users = append(users, user)
+	if e := r.db.SelectContext(ctx, &users, paginateUsersQuery, start, end-start); e != nil {
+		return users, e
 	}
 	return users, nil
 }

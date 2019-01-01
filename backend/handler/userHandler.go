@@ -51,12 +51,12 @@ func (h *userHandler) Update(c *gin.Context) {
 }
 
 func (h *userHandler) Paginate(c *gin.Context) {
-	start, e := strconv.Atoi(c.Param("start"))
+	start, e := strconv.Atoi(c.Query("start"))
 	if e != nil {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	end, e := strconv.Atoi(c.Param("end"))
+	end, e := strconv.Atoi(c.Query("end"))
 	if e != nil {
 		c.JSON(http.StatusBadRequest, nil)
 		return

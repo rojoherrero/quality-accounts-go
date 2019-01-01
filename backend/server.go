@@ -28,22 +28,22 @@ func (a *Server) createRoutes() {
 	roleRoutes := baseRoute.Group("/role")
 	{
 		roleRoutes.POST("", a.api.role.Save)
-		roleRoutes.PUT("/update", a.api.role.Update)
-		roleRoutes.GET("/{start}/{finish}", a.api.role.Paginate)
+		roleRoutes.PUT("", a.api.role.Update)
+		roleRoutes.GET("", a.api.role.Paginate)
 		roleRoutes.DELETE("", a.api.role.Delete)
 	}
 	departmentRoutes := baseRoute.Group("/department")
 	{
 		departmentRoutes.POST("", a.api.department.Save)
-		departmentRoutes.PUT("/update", a.api.department.Update)
-		departmentRoutes.GET("/{start}/{finish}", a.api.department.Paginate)
+		departmentRoutes.PUT("", a.api.department.Update)
+		departmentRoutes.GET("", a.api.department.Paginate)
 		departmentRoutes.DELETE("", a.api.department.Delete)
 	}
 	userRoutes := baseRoute.Group("/user")
 	{
 		userRoutes.POST("", a.api.user.Save)
-		userRoutes.PUT("/update", a.api.user.Update)
-		userRoutes.GET("/{start}/{finish}", a.api.user.Paginate)
+		userRoutes.PUT("", a.api.user.Update)
+		userRoutes.GET("", a.api.user.Paginate)
 		userRoutes.DELETE("", a.api.user.Delete)
 	}
 
