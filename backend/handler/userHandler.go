@@ -31,7 +31,8 @@ func NewUserHandler(service service.UserService) UserHandler {
 func (h *userHandler) Save(c *gin.Context) {
 	var user model.UserCreationDto
 	_ = c.BindJSON(&user)
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Save(ctx, user); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
@@ -42,7 +43,8 @@ func (h *userHandler) Save(c *gin.Context) {
 func (h *userHandler) Update(c *gin.Context) {
 	var user model.UserCreationDto
 	_ = c.BindJSON(&user)
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Update(ctx, user); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
@@ -61,7 +63,8 @@ func (h *userHandler) Paginate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	roles, e := h.service.Paginate(ctx, int64(start), int64(end))
 	if e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
@@ -76,7 +79,8 @@ func (h *userHandler) Delete(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Delete(ctx, int64(userId)); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return

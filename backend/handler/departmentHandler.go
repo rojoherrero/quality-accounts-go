@@ -32,7 +32,8 @@ func NewDepartmentHandler(service service.DepartmentService) DepartmentHandler {
 func (h *departmentHandler) Save(c *gin.Context) {
 	var departments []model.Department
 	_ = c.BindJSON(&departments)
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Save(ctx, departments); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
@@ -43,7 +44,8 @@ func (h *departmentHandler) Save(c *gin.Context) {
 func (h *departmentHandler) Update(c *gin.Context) {
 	var department model.Department
 	c.BindJSON(&department)
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Update(ctx, department); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
@@ -63,7 +65,8 @@ func (h *departmentHandler) Paginate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	var deps []model.Department
 	if deps, e = h.service.Paginate(ctx, start, end); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
@@ -74,7 +77,8 @@ func (h *departmentHandler) Paginate(c *gin.Context) {
 
 func (h *departmentHandler) Delete(c *gin.Context) {
 	id := c.Query("code")
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Delete(ctx, id); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return

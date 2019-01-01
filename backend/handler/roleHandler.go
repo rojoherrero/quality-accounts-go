@@ -36,7 +36,8 @@ func NewRoleHandler(service service.RoleService) RoleHandler {
 
 func (h *roleHandler) Save(c *gin.Context) {
 	var role []model.Role
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	_ = c.BindJSON(&role)
 	if e := h.service.Save(ctx, role); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
@@ -48,7 +49,8 @@ func (h *roleHandler) Save(c *gin.Context) {
 func (h *roleHandler) Update(c *gin.Context) {
 	var update model.Role
 	_ = c.BindJSON(&update)
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Update(ctx, update); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
@@ -67,7 +69,8 @@ func (h *roleHandler) Paginate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	roles, e := h.service.Paginate(ctx, start, end)
 	if e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
@@ -78,7 +81,8 @@ func (h *roleHandler) Paginate(c *gin.Context) {
 
 func (h *roleHandler) Delete(c *gin.Context) {
 	code := c.Query("code")
-	ctx, _ := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), _10SecondsTimeOut)
+	defer cancel()
 	if e := h.service.Delete(ctx, code); e != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
