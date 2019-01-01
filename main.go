@@ -1,20 +1,29 @@
 package main
 
 import (
-	. "github.com/rojoherrero/quality-accounts/app"
-	"github.com/rojoherrero/quality-common"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
+	"github.com/nats-io/go-nats"
+	"github.com/rojoherrero/quality-accounts/backend"
 )
 
 const appPrefix = "accounts"
 
 func main() {
+	//configService, e := cfg.InitConfigService(appPrefix)
+	//if e != nil {
+	//	panic(e)
+	//}
+	//dsn, e := configService.GetPostgresDSN()
 
-	configService := common.InitConfigService(appPrefix)
-	db, nc := configService.GetDataSources()
-	logger := common.InitLogger("$HOME/logs")
+	dsn := "host=localhost port=5432 user=postgres password=postgres dbname=quality-go sslmode=disable"
 
-	app := InitApp(db, nc, logger)
+	db := sqlx.MustConnect("postgres", dsn)
+	db.Ping()
+
+	nc, _ := nats.Connect(nats.DefaultURL)
+
+	app := server.InitServer(db, nc)
 
 	app.Run("8080")
-
 }
