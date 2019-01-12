@@ -4,9 +4,10 @@ package service
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 
-	"github.com/rojoherrero/quality-accounts/backend/model"
-	"github.com/rojoherrero/quality-accounts/backend/repository"
+	"github.com/rojoherrero/quality-accounts/server/model"
+	"github.com/rojoherrero/quality-accounts/server/repository"
 )
 
 type (
@@ -19,11 +20,12 @@ type (
 
 	roleService struct {
 		service repository.RoleRepository
+		logger  zerolog.Logger
 	}
 )
 
-func NewRoleService(service repository.RoleRepository) RoleService {
-	return &roleService{service: service}
+func NewRoleService(service repository.RoleRepository, logger zerolog.Logger) RoleService {
+	return &roleService{service: service, logger: logger}
 }
 
 func (s *roleService) Save(ctx context.Context, role []model.Role) error {

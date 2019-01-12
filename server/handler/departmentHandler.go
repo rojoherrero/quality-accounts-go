@@ -4,10 +4,11 @@ package handler
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rojoherrero/quality-accounts/backend/model"
-	"github.com/rojoherrero/quality-accounts/backend/service"
+	"github.com/rojoherrero/quality-accounts/server/model"
+	"github.com/rojoherrero/quality-accounts/server/service"
 	"net/http"
 	"strconv"
 )
@@ -22,11 +23,12 @@ type (
 
 	departmentHandler struct {
 		service service.DepartmentService
+		logger  zerolog.Logger
 	}
 )
 
-func NewDepartmentHandler(service service.DepartmentService) DepartmentHandler {
-	return &departmentHandler{service: service}
+func NewDepartmentHandler(service service.DepartmentService, logger zerolog.Logger) DepartmentHandler {
+	return &departmentHandler{service: service, logger: logger}
 }
 
 func (h *departmentHandler) Save(c *gin.Context) {

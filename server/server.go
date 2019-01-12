@@ -1,10 +1,11 @@
 package server
 
 import (
-	"fmt"
+	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/nats-io/go-nats"
+	"github.com/rs/zerolog"
 )
 
 type Server struct {
@@ -12,15 +13,24 @@ type Server struct {
 	api    *api
 }
 
-func InitServer(db *sqlx.DB, nc *nats.Conn) *Server {
+func NewServer(db *sqlx.DB, nc *nats.Conn, log zerolog.Logger) *Server {
 	a := &Server{
-		api:    newApi(db, nc),
-		engine: gin.Default(),
+		api:    newApi(db, nc, log),
+		engine: configEngine(log),
 	}
-	a.engine.Use(CORSMiddleware())
 	a.createRoutes()
 	return a
 
+}
+
+func configEngine(log zerolog.Logger) *gin.Engine {
+	ginLogger := logger.SetLogger(logger.Config{
+		Logger: &log,
+		UTC:    true,
+	})
+	engine := gin.New()
+	engine.Use(ginLogger, corsMiddleware)
+	return engine
 }
 
 func (a *Server) createRoutes() {
@@ -46,27 +56,21 @@ func (a *Server) createRoutes() {
 		userRoutes.GET("", a.api.user.Paginate)
 		userRoutes.DELETE("", a.api.user.Delete)
 	}
-
 }
-
 
 func (a *Server) Run(port string) {
-	listeningPort := fmt.Sprintf(":%s", port)
-	a.engine.Run(listeningPort)
+	a.engine.Run(port)
 }
 
+var corsMiddleware = func(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE, GET, OPTIONS, POST, PUT")
 
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE, GET, OPTIONS, POST, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
-		c.Next()
+	if c.Request.Method == "OPTIONS" {
+		c.AbortWithStatus(204)
+		return
 	}
+
+	c.Next()
 }

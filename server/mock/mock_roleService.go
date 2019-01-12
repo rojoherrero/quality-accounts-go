@@ -7,7 +7,7 @@ package mock
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/rojoherrero/quality-accounts/backend/model"
+	model "github.com/rojoherrero/quality-accounts/server/model"
 	reflect "reflect"
 )
 
@@ -47,15 +47,15 @@ func (mr *MockRoleServiceMockRecorder) Save(ctx, role interface{}) *gomock.Call 
 }
 
 // Update mocks base method
-func (m *MockRoleService) Update(ctx context.Context, data model.Role, oldCode string) error {
-	ret := m.ctrl.Call(m, "Update", ctx, data, oldCode)
+func (m *MockRoleService) Update(ctx context.Context, data model.Role) error {
+	ret := m.ctrl.Call(m, "Update", ctx, data)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockRoleServiceMockRecorder) Update(ctx, data, oldCode interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoleService)(nil).Update), ctx, data, oldCode)
+func (mr *MockRoleServiceMockRecorder) Update(ctx, data interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoleService)(nil).Update), ctx, data)
 }
 
 // Paginate mocks base method
@@ -72,13 +72,13 @@ func (mr *MockRoleServiceMockRecorder) Paginate(ctx, start, end interface{}) *go
 }
 
 // Delete mocks base method
-func (m *MockRoleService) Delete(ctx context.Context, id int64) error {
-	ret := m.ctrl.Call(m, "Delete", ctx, id)
+func (m *MockRoleService) Delete(ctx context.Context, code string) error {
+	ret := m.ctrl.Call(m, "Delete", ctx, code)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockRoleServiceMockRecorder) Delete(ctx, id interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRoleService)(nil).Delete), ctx, id)
+func (mr *MockRoleServiceMockRecorder) Delete(ctx, code interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRoleService)(nil).Delete), ctx, code)
 }

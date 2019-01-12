@@ -6,13 +6,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"github.com/rojoherrero/quality-accounts/backend/model"
+	"github.com/rojoherrero/quality-accounts/server/model"
+	"github.com/rs/zerolog"
 	"strings"
 )
 
 const (
-	insertUserQuery    = "insert into accounts.users(full_name, user_name, password) values ($1, $2, $3) returning id"
-	updateUserQuery    = `update accounts.users 
+	insertUserQuery = "insert into accounts.users(full_name, user_name, password) values ($1, $2, $3) returning id"
+	updateUserQuery = `update accounts.users 
 							 set full_name = $1,
 							     user_name = $2,
 							     password = $3,
@@ -51,11 +52,14 @@ type (
 		GetLogInData(ctx context.Context, username string) error
 	}
 
-	userRepository struct{ db *sqlx.DB }
+	userRepository struct {
+		db     *sqlx.DB
+		logger zerolog.Logger
+	}
 )
 
-func NewUserRepository(db *sqlx.DB) UserRepository {
-	return &userRepository{db: db}
+func NewUserRepository(db *sqlx.DB, logger zerolog.Logger) UserRepository {
+	return &userRepository{db: db, logger: logger}
 }
 
 func (r *userRepository) Save(ctx context.Context, user model.UserCreationDto) error {
@@ -80,7 +84,7 @@ func (r *userRepository) Update(ctx context.Context, user model.UserCreationDto)
 		tx.Rollback()
 		return e
 	}
-	if len(user.DepartmentRoles.DepartmentCode) != 0{
+	if len(user.DepartmentRoles.DepartmentCode) != 0 {
 		if _, e := tx.ExecContext(ctx, deleteUserDepartmentsRolesQuery, user.ID); e != nil {
 			tx.Rollback()
 			return e

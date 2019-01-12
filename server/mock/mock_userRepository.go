@@ -7,7 +7,7 @@ package mock
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/rojoherrero/quality-accounts/backend/model"
+	model "github.com/rojoherrero/quality-accounts/server/model"
 	reflect "reflect"
 )
 
@@ -72,15 +72,15 @@ func (mr *MockUserRepositoryMockRecorder) Paginate(ctx, start, end interface{}) 
 }
 
 // Delete mocks base method
-func (m *MockUserRepository) Delete(ctx context.Context, code string) error {
-	ret := m.ctrl.Call(m, "Delete", ctx, code)
+func (m *MockUserRepository) Delete(ctx context.Context, id int64) error {
+	ret := m.ctrl.Call(m, "Delete", ctx, id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockUserRepositoryMockRecorder) Delete(ctx, code interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUserRepository)(nil).Delete), ctx, code)
+func (mr *MockUserRepositoryMockRecorder) Delete(ctx, id interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUserRepository)(nil).Delete), ctx, id)
 }
 
 // GetLogInData mocks base method

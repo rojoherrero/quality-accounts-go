@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/rojoherrero/quality-accounts/backend/model"
-	"github.com/rojoherrero/quality-accounts/backend/repository"
+	"github.com/rojoherrero/quality-accounts/server/model"
+	"github.com/rojoherrero/quality-accounts/server/repository"
+	"github.com/rs/zerolog"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=../mock/mock_$GOFILE -package=mock
@@ -17,12 +18,13 @@ type (
 	}
 
 	departmentService struct {
-		repo repository.DepartmentRepository
+		repo   repository.DepartmentRepository
+		logger zerolog.Logger
 	}
 )
 
-func NewDepartmentService(repo repository.DepartmentRepository) DepartmentService {
-	return &departmentService{repo: repo}
+func NewDepartmentService(repo repository.DepartmentRepository, logger zerolog.Logger) DepartmentService {
+	return &departmentService{repo: repo, logger: logger}
 }
 
 func (s *departmentService) Save(ctx context.Context, departments []model.Department) error {

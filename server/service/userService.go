@@ -4,8 +4,9 @@ package service
 
 import (
 	"context"
-	"github.com/rojoherrero/quality-accounts/backend/model"
-	"github.com/rojoherrero/quality-accounts/backend/repository"
+	"github.com/rojoherrero/quality-accounts/server/model"
+	"github.com/rojoherrero/quality-accounts/server/repository"
+	"github.com/rs/zerolog"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,11 +20,12 @@ type (
 
 	userService struct {
 		repo   repository.UserRepository
+		logger zerolog.Logger
 	}
 )
 
-func NewUserService(repo repository.UserRepository) UserService {
-	return &userService{repo}
+func NewUserService(repo repository.UserRepository, logger zerolog.Logger) UserService {
+	return &userService{repo, logger}
 }
 
 func (s *userService) Save(ctx context.Context, user model.UserCreationDto) error {
@@ -49,7 +51,7 @@ func (s *userService) hashPassword(password string) (string, error) {
 	return string(hash), e
 }
 
-func (s *userService) Paginate(ctx context.Context,start, end int64) (model.PropertyMapSlice, error) {
+func (s *userService) Paginate(ctx context.Context, start, end int64) (model.PropertyMapSlice, error) {
 	return s.repo.Paginate(ctx, start, end)
 }
 

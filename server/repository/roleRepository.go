@@ -6,15 +6,16 @@ import (
 	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/rs/zerolog"
 	"strings"
 
-	"github.com/rojoherrero/quality-accounts/backend/model"
+	"github.com/rojoherrero/quality-accounts/server/model"
 )
 
 const (
 	insertRoleQueryBase = "insert into accounts.roles(code, name) values %s"
-	updateRoleQuery = "update accounts.roles set name = $1 where code = $2"
-	paginateRolesQuery = `SELECT r.code as "role_code", r."name" as "role_name" 
+	updateRoleQuery     = "update accounts.roles set name = $1 where code = $2"
+	paginateRolesQuery  = `SELECT r.code as "role_code", r."name" as "role_name" 
 						  FROM accounts.roles r 
 						  ORDER BY r."name" ASC 
 						  OFFSET $1 LIMIT $2`
@@ -30,26 +31,27 @@ type (
 	}
 
 	roleRepository struct {
-		db *sqlx.DB
+		db     *sqlx.DB
+		logger zerolog.Logger
 	}
 )
 
-func NewRoleRepository(db *sqlx.DB) RoleRepository {
-	return &roleRepository{db: db}
+func NewRoleRepository(db *sqlx.DB, logger zerolog.Logger) RoleRepository {
+	return &roleRepository{db: db, logger: logger}
 }
 
 func (r *roleRepository) Save(ctx context.Context, roles []model.Role) error {
 	numberOfColumns := 2
 	rolesLength := len(roles)
 	valueStrings := make([]string, 0, rolesLength)
-	valueArgs := make([]interface{}, 0, rolesLength * numberOfColumns)
+	valueArgs := make([]interface{}, 0, rolesLength*numberOfColumns)
 	for i, role := range roles {
 		dollarNumberSeed := i * numberOfColumns
-		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d)", dollarNumberSeed + 1, dollarNumberSeed + 2))
+		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d)", dollarNumberSeed+1, dollarNumberSeed+2))
 		valueArgs = append(valueArgs, role.Code)
 		valueArgs = append(valueArgs, role.Name)
 	}
-	rawQuery := fmt.Sprintf(insertRoleQueryBase , strings.Join(valueStrings, ","))
+	rawQuery := fmt.Sprintf(insertRoleQueryBase, strings.Join(valueStrings, ","))
 	stmt, _ := r.db.Prepare(rawQuery)
 	if _, e := stmt.ExecContext(ctx, valueArgs...); e != nil {
 		return e

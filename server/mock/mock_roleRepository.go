@@ -7,7 +7,7 @@ package mock
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/rojoherrero/quality-accounts/backend/model"
+	model "github.com/rojoherrero/quality-accounts/server/model"
 	reflect "reflect"
 )
 
@@ -47,15 +47,15 @@ func (mr *MockRoleRepositoryMockRecorder) Save(ctx, roles interface{}) *gomock.C
 }
 
 // Update mocks base method
-func (m *MockRoleRepository) Update(ctx context.Context, data model.Role, oldCode string) error {
-	ret := m.ctrl.Call(m, "Update", ctx, data, oldCode)
+func (m *MockRoleRepository) Update(ctx context.Context, data model.Role) error {
+	ret := m.ctrl.Call(m, "Update", ctx, data)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockRoleRepositoryMockRecorder) Update(ctx, data, oldCode interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoleRepository)(nil).Update), ctx, data, oldCode)
+func (mr *MockRoleRepositoryMockRecorder) Update(ctx, data interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoleRepository)(nil).Update), ctx, data)
 }
 
 // Paginate mocks base method
