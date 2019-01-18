@@ -1,29 +1,57 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/nats-io/go-nats"
-	"github.com/rojoherrero/quality-accounts/backend"
+	nats "github.com/nats-io/go-nats"
+	"github.com/rojoherrero/quality-accounts/server"
+	"github.com/rs/zerolog"
+	"github.com/spf13/viper"
 )
 
-const appPrefix = "accounts"
-
 func main() {
-	//configService, e := cfg.InitConfigService(appPrefix)
-	//if e != nil {
-	//	panic(e)
-	//}
-	//dsn, e := configService.GetPostgresDSN()
+	appConfig := readConfigFile()
+	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	postgres := appConfig.connectToPostgres()
+	nc := appConfig.connectToNATS()
+	server.New(postgres, nc, logger).Run(appConfig.getServerPort())
+}
 
-	dsn := "host=localhost port=5432 user=postgres password=postgres dbname=quality-go sslmode=disable"
+type config struct {
+	*viper.Viper
+}
 
-	db := sqlx.MustConnect("postgres", dsn)
-	db.Ping()
+func readConfigFile() *config {
+	cfg := viper.New()
+	cfg.SetConfigName("application")
+	cfg.AddConfigPath(".")
+	if e := cfg.ReadInConfig(); e != nil {
+		panic(e)
+	}
+	return &config{cfg}
+}
 
-	nc, _ := nats.Connect(nats.DefaultURL)
+func (c *config) connectToPostgres() *sqlx.DB {
+	data := c.Sub("datasources.postgres")
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		data.GetString("host"), data.GetString("port"), data.GetString("user"),
+		data.GetString("password"), data.GetString("dbname"))
+	return sqlx.MustConnect("postgres", dsn)
+}
 
-	app := server.InitServer(db, nc)
+func (c *config) connectToNATS() *nats.Conn {
+	data := c.Sub("datasources.nats")
+	dsn := fmt.Sprintf("nats://%s:%s", data.GetString("host"), data.GetString("port"))
+	nc, e := nats.Connect(dsn)
+	if e != nil {
+		panic(e)
+	}
+	return nc
+}
 
-	app.Run("8080")
+func (c *config) getServerPort() string {
+	return fmt.Sprintf(":%s", c.GetString("server.port"))
 }

@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/nats-io/go-nats"
+	nats "github.com/nats-io/go-nats"
 	"github.com/rojoherrero/quality-accounts/server/handler"
 	"github.com/rojoherrero/quality-accounts/server/repository"
 	"github.com/rojoherrero/quality-accounts/server/service"
@@ -15,7 +15,7 @@ type api struct {
 	user       handler.UserHandler
 }
 
-func newApi(db *sqlx.DB, nc *nats.Conn, logger zerolog.Logger) *api {
+func newAPI(db *sqlx.DB, nc *nats.Conn, logger zerolog.Logger) *api {
 	return &api{
 		role:       initRoleHandler(db, logger),
 		department: initDepartmentHandler(db, logger),
